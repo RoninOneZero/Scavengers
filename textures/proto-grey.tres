@@ -3,8 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://n2j8rntmit1c" path="res://textures/proto-grey.png" id="1_v4mgg"]
 
 [resource]
+shading_mode = 2
+diffuse_mode = 3
 albedo_texture = ExtResource("1_v4mgg")
 metallic_specular = 0.25
-anisotropy_enabled = true
 ao_enabled = true
 texture_filter = 4
