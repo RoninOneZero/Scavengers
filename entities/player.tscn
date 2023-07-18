@@ -1,6 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://ds241sxg1nj0x"]
+[gd_scene load_steps=10 format=3 uid="uid://ds241sxg1nj0x"]
 
 [ext_resource type="Texture2D" uid="uid://0r7vcj0c72tt" path="res://UI/KenneyCrosshairs/crosshair001.png" id="1_5d2nc"]
+[ext_resource type="Script" path="res://addons/xsm/templates/State/empty_state.gd" id="2_650au"]
+[ext_resource type="Script" path="res://addons/xsm/templates/StateAnimation/empty_state_animation.gd" id="3_jwrk3"]
 
 [sub_resource type="GDScript" id="GDScript_dmxq4"]
 script/source = "extends CharacterBody3D
@@ -172,6 +174,7 @@ value = 50.0
 script = SubResource("GDScript_wy68u")
 
 [node name="Label" type="Label" parent="HUD"]
+visible = false
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -191,5 +194,23 @@ vertical_alignment = 1
 
 [node name="HEALTH" type="Node" parent="."]
 script = SubResource("GDScript_cqof6")
+
+[node name="State" type="Node" parent="."]
+script = ExtResource("2_650au")
+history_size = 0
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("")
+
+[node name="StateAnimation" type="Node" parent="State"]
+script = ExtResource("3_jwrk3")
+animation_player = NodePath("")
+disabled = false
+debug_mode = false
+target_path = NodePath("")
+timed = false
+next_state = NodePath("")
 
 [connection signal="health_changed" from="HEALTH" to="HUD/HealthMeter" method="change_value"]

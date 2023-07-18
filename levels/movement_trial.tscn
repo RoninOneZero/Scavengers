@@ -111,9 +111,8 @@ mesh = SubResource("ArrayMesh_5fehw")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TBLoader/Default Layer/entity_0_geometry_col"]
 shape = SubResource("ConcavePolygonShape3D_qqnd8")
 
-[node name="Player" type="CharacterBody3D" parent="TBLoader" instance=ExtResource("2_7o6v5")]
+[node name="Player" parent="TBLoader" instance=ExtResource("2_7o6v5")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 4.5, 1.5, 4.5)
-collision_layer = 2
 script = SubResource("GDScript_dmxq4")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
