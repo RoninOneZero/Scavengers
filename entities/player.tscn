@@ -1,8 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://ds241sxg1nj0x"]
+[gd_scene load_steps=14 format=3 uid="uid://ds241sxg1nj0x"]
 
 [ext_resource type="Texture2D" uid="uid://0r7vcj0c72tt" path="res://UI/KenneyCrosshairs/crosshair001.png" id="1_5d2nc"]
+[ext_resource type="AudioStream" uid="uid://d2lry6nukrv2" path="res://audio/sound effects/impactBell_heavy_004.ogg" id="1_8exds"]
+[ext_resource type="PackedScene" uid="uid://c4nes2mt7rcn4" path="res://entities/coachgun.tscn" id="1_wdm2u"]
 [ext_resource type="Script" path="res://addons/xsm/templates/State/empty_state.gd" id="2_650au"]
 [ext_resource type="Script" path="res://addons/xsm/templates/StateAnimation/empty_state_animation.gd" id="3_jwrk3"]
+[ext_resource type="FontFile" uid="uid://jjghrgu05pbi" path="res://UI/KenneyFonts/Kenney Blocks.ttf" id="4_xmspf"]
+[ext_resource type="Script" path="res://entities/AmmoCounter.gd" id="5_i4hnu"]
 
 [sub_resource type="GDScript" id="GDScript_dmxq4"]
 script/source = "extends CharacterBody3D
@@ -11,13 +15,15 @@ script/source = "extends CharacterBody3D
 
 @onready var camera := $Camera3D
 
-const JUMP_VELOCITY = 4.0
-const MAX_SPEED = 7.5
+const JUMP_VELOCITY = 3.0
+const MAX_SPEED = 5.0
 const MAX_ACCEL = 10 * MAX_SPEED 
 
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity: float = ProjectSettings.get_setting(\"physics/3d/default_gravity\")
+
+var airborn: bool = false
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -40,11 +46,18 @@ func _physics_process(delta: float) -> void:
 	## Gravity
 	if not is_on_floor():
 		velocity.y -= gravity * delta
+		airborn = true
+
 	
-	## Ground friction
+	
+	
+	## Ground friction and fall to floor check
 	var friction: float
 	if is_on_floor():
 		friction = 0.93
+		if airborn:
+			$AudioStreamPlayer3D.play()
+			airborn = false
 	else:
 		friction = 0.995
 	
@@ -82,6 +95,8 @@ func _physics_process(delta: float) -> void:
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_0upog"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_h3kle"]
+radius = 0.399566
+height = 1.21114
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t4xjr"]
 bg_color = Color(0.737255, 0, 0.113725, 1)
@@ -128,10 +143,21 @@ mesh = SubResource("CapsuleMesh_0upog")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_h3kle")
 
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.882623, 0)
+stream = ExtResource("1_8exds")
+bus = &"SoundFX"
+
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.799785, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000241876, 0.797189, -0.000961661)
 current = true
 fov = 90.0
+
+[node name="ItemHand" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000241876, -0.797189, 0.000961661)
+
+[node name="coach_gun" parent="Camera3D/ItemHand" instance=ExtResource("1_wdm2u")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.463365, 0.336207, -0.952964)
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 3
@@ -192,6 +218,26 @@ text = "debug"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="AmmoCounter" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0001
+offset_top = 8.0
+offset_right = 117.4
+offset_bottom = 55.4
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.803922, 0.415686, 0, 1)
+theme_override_fonts/font = ExtResource("4_xmspf")
+theme_override_font_sizes/font_size = 25
+text = "0/0"
+horizontal_alignment = 1
+script = ExtResource("5_i4hnu")
+
 [node name="HEALTH" type="Node" parent="."]
 script = SubResource("GDScript_cqof6")
 
@@ -212,5 +258,7 @@ debug_mode = false
 target_path = NodePath("")
 timed = false
 next_state = NodePath("")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 
 [connection signal="health_changed" from="HEALTH" to="HUD/HealthMeter" method="change_value"]

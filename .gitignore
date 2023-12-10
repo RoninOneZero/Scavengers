@@ -14,3 +14,13 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 .obsidian
+
+# Projects ignores
+## Images
+*.svg
+*.png
+*.jpg
+
+# Audio
+*.ogg
+*.wav

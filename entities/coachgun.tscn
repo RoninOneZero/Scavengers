@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4nes2mt7rcn4"]
+
+[ext_resource type="PackedScene" uid="uid://bh8xyswttt44f" path="res://models/coachgun.blend" id="1_dyyma"]
+[ext_resource type="Script" path="res://entities/coachgun.gd" id="2_4mkap"]
+[ext_resource type="AudioStream" uid="uid://drjamg2ose1rc" path="res://audio/sound effects/explosion1.ogg" id="3_qmv44"]
+
+[node name="coachgun" instance=ExtResource("1_dyyma")]
+script = ExtResource("2_4mkap")
+
+[node name="Armature" parent="." index="1"]
+transform = Transform3D(-1.74846e-08, 0, -0.4, 0, 0.4, 0, 0.4, 0, -1.74846e-08, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/1/rotation = Quaternion(0.353553, -0.612372, -0.353553, 0.612372)
+
+[node name="Gunmesh" parent="Armature/Skeleton3D" index="0"]
+transform = Transform3D(1, 0, -3.55271e-15, 0, 1, 0, 3.55271e-15, 0, 1, 0, 0, 0)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." index="3"]
+stream = ExtResource("3_qmv44")
+max_polyphony = 3
+bus = &"SoundFX"
+
+[node name="RefireCD" type="Timer" parent="." index="4"]
+wait_time = 0.1
+one_shot = true
